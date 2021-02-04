@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class VideoPlayer extends StatefulWidget {
-  static final id ='/';
+  static final id ='video';
   @override
   _VideoPlayerState createState() => _VideoPlayerState();
 }
