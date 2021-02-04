@@ -5,6 +5,7 @@ import 'screens/videos.dart';
 
 void main() {
   runApp(MaterialApp(
+    theme: ThemeData.dark(),
     debugShowCheckedModeBanner:false,
     routes: {
       '/':(contex)=>Home(),
