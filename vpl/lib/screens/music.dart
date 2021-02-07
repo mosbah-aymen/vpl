@@ -4,14 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Music extends StatefulWidget {
   @override
   _MusicState createState() => _MusicState();
 }
-
 class _MusicState extends State<Music> {
-  List files = [];
+  List<String> files = [];
+  bool played=false;
+  String _key='music';
   int selected=0;
   AudioPlayer audioPlayer = AudioPlayer();
   void getAudio() async {
@@ -21,59 +23,78 @@ class _MusicState extends State<Music> {
     if (result != null) {
       File file = File(result.files.first.path);
       files.add(file.path);
+      savePaths();
     }
     setState(() {});
   }
-bool played=true;
+  void savePaths()async{
+    SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
+    sharedPreferences.setStringList(_key,files);
+  }
+  void getPaths()async{
+    SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
+    files = sharedPreferences.getStringList(_key) ?? [];
+    setState(() {
+    });
+  }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     audioPlayer.dispose();
     audioPlayer=AudioPlayer();
-
+    getPaths();
   }
 
   @override
   Widget build(BuildContext context) {
+    getPaths();
     if (files.length>0 && played){
       audioPlayer.play(files[selected]);
     }
-    return Scaffold(
-     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.music_note_sharp),
-        onPressed: () {
-          getAudio();
-        },
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            flex: 5,
-            child: ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: files.length,
-                itemBuilder: (context, i) {
-                  return GestureDetector(
-                    onTap: () async {
-                        print(files[i]);
-                        await audioPlayer.play(files[i]);
-                    },
-                    child: SongField(
-                      str: files[i],
-                      playingThis: selected==i,
-                    ),
-                  );
-                }),
-          ),
-          Expanded(
-            child: Container(
+    savePaths();
+    return Stack(
+      children: [
+        Scaffold(
+       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.red[300],
+          child: Icon(Icons.music_note_sharp),
+          onPressed: () {
+            getAudio();
+            savePaths();
+            setState(() {
+
+            });
+          },
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  itemCount: files.length,
+                  itemBuilder: (context, i) {
+                    return GestureDetector(
+                      onTap: () async {
+                          print(files[i]);
+                          await audioPlayer.play(files[i]);
+                      },
+                      child: SongField(
+                        str: files[i],
+                        playingThis: selected==i,
+                      ),
+                    );
+                  }),
+            ),
+            Container(
+              height: 70,
               width: double.infinity,
+              margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.indigo,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(90)),
+
+                color: Colors.red[900],
+                borderRadius: BorderRadius.all( Radius.circular(30)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -95,7 +116,7 @@ bool played=true;
                       }),
                   IconButton(
                       icon: Icon(
-                        played?  Icons.play_circle_fill:Icons.pause_circle_filled,
+                        !played?  Icons.play_circle_fill:Icons.pause_circle_filled,
                       ),
                       onPressed: () {
                         setState(() {
@@ -124,9 +145,11 @@ bool played=true;
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      ]
+
     );
   }
 }
@@ -141,15 +164,20 @@ class SongField extends StatelessWidget {
   Widget build(BuildContext context) {
     String nameSong = str;
     nameSong=nameSong.substring(46);
-    return Card(
-      color: playingThis? Colors.indigoAccent:null,
-      child: ListTile(
-        //leading: Image.asset(),
-        onTap: () {},
-        subtitle: Text('P'),
-        title: Text(nameSong),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(15))
       ),
-      borderOnForeground: true,
+      child: Card(
+        color: playingThis? Colors.red[900]:null,
+        child: ListTile(
+          //leading: Image.asset(),
+          onTap: () {},
+          subtitle: Text(''),
+          title: Text(nameSong),
+        ),
+      ),
+      
     );
   }
 }

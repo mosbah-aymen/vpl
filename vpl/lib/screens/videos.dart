@@ -23,11 +23,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getVideo();
   }
-
+//TODO :::: For karim :::: 3andk beh tjib l path , mazelk video player brk; w daber rassek f design;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

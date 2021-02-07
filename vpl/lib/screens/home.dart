@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vpl/screens/files.dart';
 import 'package:vpl/screens/music.dart';
 import 'package:vpl/screens/videos.dart';
-
+const kMyColor=Colors.red;
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -39,41 +39,41 @@ int selected=0;
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(icon: Icon(Icons.home,color:selected==0? Colors.deepOrange: Colors.grey,), iconSize: 36,onPressed: (){
+            IconButton(icon: Icon(Icons.home,color:selected==0?kMyColor : Colors.grey,), iconSize: 36,onPressed: (){
               setState(() {
                 selected=0;
                 index.jumpToPage(0);
               });
             }),
-            IconButton(icon: Icon(Icons.video_collection_sharp,color: selected==1? Colors.deepOrange: Colors.grey,), iconSize: 36,onPressed: (){
+            IconButton(icon: Icon(Icons.video_collection_sharp,color: selected==1? kMyColor: Colors.grey,), iconSize: 36,onPressed: (){
               setState(() {
-                selected=1;
                 index.jumpToPage(1);
+                selected=1;
+
               });
             }),
-            IconButton(icon: Icon(Icons.music_note_sharp,color: selected==2? Colors.deepOrange: Colors.grey,),iconSize: 36, onPressed: (){
+            IconButton(icon: Icon(Icons.music_note_sharp,color: selected==2? kMyColor: Colors.grey,),iconSize: 36, onPressed: (){
               setState(() {
-                selected=2;
                 index.jumpToPage(2);
+                selected=2;
               });
             }),
-            IconButton(icon: Icon(Icons.insert_drive_file,color: selected==3? Colors.deepOrange: Colors.grey,),iconSize: 36, onPressed: (){
+            IconButton(icon: Icon(Icons.insert_drive_file,color: selected==3? kMyColor: Colors.grey,),iconSize: 36, onPressed: (){
               setState(() {
-                selected=3;
                 index.jumpToPage(3);
+                selected=3;
               });
             }),
-            IconButton(icon: Icon(Icons.favorite_border,color: selected==4? Colors.deepOrange: Colors.grey,),iconSize: 36, onPressed: (){
+            IconButton(icon: Icon(Icons.favorite_border,color: selected==4? kMyColor: Colors.grey,),iconSize: 36, onPressed: (){
               setState(() {
-                selected=4;
                 index.jumpToPage(4);
+                selected=4;
               });
             }),
           ],
         ),
       ),
       body: PageView(
-        allowImplicitScrolling: false,
         controller: index,
         children: [
           HomePage(),
