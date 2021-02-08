@@ -106,7 +106,7 @@ class _MusicState extends State<Music> {
                       onPressed: () {
                        setState(() {
                          if(selected==0){
-                           selected=files.length-1;
+                           selected=files.length;
                          }
                          else{
                            selected--;
@@ -151,7 +151,7 @@ class _MusicState extends State<Music> {
                       ),
                       onPressed: () {
                         setState(() {
-                          if (selected<files.length-1){selected++;}
+                          if (selected<files.length){selected++;}
                           else{
                             selected=0;
                           }
