@@ -16,10 +16,10 @@ class _MusicState extends State<Music> {
   String _key='music';
   int selected=0;
   AudioPlayer audioPlayer = AudioPlayer();
+
   void getAudio() async {
     FilePickerResult result =
         await FilePicker.platform.pickFiles(type: FileType.audio);
-
     if (result != null) {
       File file = File(result.files.first.path);
       files.add(file.path);
@@ -47,26 +47,15 @@ class _MusicState extends State<Music> {
 
   @override
   Widget build(BuildContext context) {
+    files.add('/storage/emulated/0/snaptube/download/SnapTube Audio/Thug Life Ringtone | Download Link.mp3');
     getPaths();
     if (files.length>0 && played){
       audioPlayer.play(files[selected]);
-    }
+      }
     savePaths();
     return Stack(
       children: [
         Scaffold(
-       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.red[300],
-          child: Icon(Icons.music_note_sharp),
-          onPressed: () {
-            getAudio();
-            savePaths();
-            setState(() {
-
-            });
-          },
-        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -75,21 +64,21 @@ class _MusicState extends State<Music> {
                   padding: const EdgeInsets.all(16.0),
                   itemCount: files.length,
                   itemBuilder: (context, i) {
-                    return GestureDetector(
-                      onTap: () async {
-                          print(files[i]);
-                          await audioPlayer.play(files[i]);
+                    return SongField(
+                      str: files[i],
+                      function: (){
+                        audioPlayer.stop();
+                        setState(() {
+                          selected=i;
+                        });
                       },
-                      child: SongField(
-                        str: files[i],
-                        playingThis: selected==i,
-                      ),
+                      playingThis: selected==i,
                     );
                   }),
             ),
             Container(
-              height: 70,
-              width: double.infinity,
+              height: 60,
+              //width: double.infinity,
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
 
@@ -98,11 +87,12 @@ class _MusicState extends State<Music> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                       icon: Icon(
-                        Icons.skip_previous,
+                        Icons.skip_previous,color: Colors.tealAccent,
+                        size: 35,
                       ),
                       onPressed: () {
                        setState(() {
@@ -117,6 +107,8 @@ class _MusicState extends State<Music> {
                   IconButton(
                       icon: Icon(
                         !played?  Icons.play_circle_fill:Icons.pause_circle_filled,
+                          size: 35
+                          ,color: Colors.tealAccent
                       ),
                       onPressed: () {
                         setState(() {
@@ -130,8 +122,23 @@ class _MusicState extends State<Music> {
                         });
                       }),
                   IconButton(
+                    icon: Icon(Icons.music_note_sharp,color: Colors.tealAccent,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      getAudio();
+                      savePaths();
+                      setState(() {
+
+                      });
+                    },
+                  ),
+                  IconButton(
                       icon: Icon(
-                        Icons.skip_next,
+                        Icons.skip_next
+                          ,color: Colors.tealAccent,
+                        size: 35,
+
                       ),
                       onPressed: () {
                         setState(() {
@@ -142,6 +149,7 @@ class _MusicState extends State<Music> {
 
                         });
                       }),
+
                 ],
               ),
             ),
@@ -160,10 +168,17 @@ class SongField extends StatelessWidget {
   bool playingThis=false;
   Function function;
   SongField({this.str, this.function,this.playingThis});
+  String getName(String s){
+    String a='';
+    for (int i=s.length-1;s[i]!='/';i--){
+      a=s[i]+a;
+    }
+    return a;
+  }
   @override
   Widget build(BuildContext context) {
     String nameSong = str;
-    nameSong=nameSong.substring(46);
+    nameSong=getName(nameSong);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(15))
@@ -171,13 +186,12 @@ class SongField extends StatelessWidget {
       child: Card(
         color: playingThis? Colors.red[900]:null,
         child: ListTile(
-          //leading: Image.asset(),
-          onTap: () {},
-          subtitle: Text(''),
+          onTap: function,
+          selected:playingThis ,
           title: Text(nameSong),
         ),
       ),
-      
+
     );
   }
 }

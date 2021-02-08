@@ -23,7 +23,6 @@ int selected=0;
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
 
-
               IconButton(icon: Icon(Icons.nightlight_round), onPressed: (){
                 setState(() {
 
@@ -34,8 +33,7 @@ int selected=0;
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-       shape: CircularNotchedRectangle(
-       ),
+       shape: CircularNotchedRectangle(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
