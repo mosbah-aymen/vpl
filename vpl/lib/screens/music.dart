@@ -69,6 +69,9 @@ class _MusicState extends State<Music> {
                   itemBuilder: (context, i) {
                     return SongField(
                       longpress: (){
+                        if(selected==files.length){
+                          selected--;
+                        }
                         files.removeAt(i);
                         setState(() {
                           savePaths();
