@@ -19,10 +19,12 @@ class _MusicState extends State<Music> {
 
   void getAudio() async {
     FilePickerResult result =
-        await FilePicker.platform.pickFiles(type: FileType.audio);
+        await FilePicker.platform.pickFiles(type: FileType.audio,allowMultiple: true);
     if (result != null) {
-      File file = File(result.files.first.path);
-      files.add(file.path);
+     for(int i=0;i<result.files.length;i++){
+      File file = File(result.files[i].path);
+      if (!files.contains(file)){files.add(file.path);}
+      }
       savePaths();
     }
     setState(() {});
@@ -43,6 +45,7 @@ class _MusicState extends State<Music> {
     audioPlayer.dispose();
     audioPlayer=AudioPlayer();
     getPaths();
+    files.sort();
   }
 
   @override
@@ -65,6 +68,12 @@ class _MusicState extends State<Music> {
                   itemCount: files.length,
                   itemBuilder: (context, i) {
                     return SongField(
+                      longpress: (){
+                        files.removeAt(i);
+                        setState(() {
+                          savePaths();
+                        });
+                      },
                       str: files[i],
                       function: (){
                         audioPlayer.stop();
@@ -166,8 +175,8 @@ class _MusicState extends State<Music> {
 class SongField extends StatelessWidget {
   String str;
   bool playingThis=false;
-  Function function;
-  SongField({this.str, this.function,this.playingThis});
+  Function function,longpress;
+  SongField({this.str, this.function,this.playingThis,this.longpress});
   String getName(String s){
     String a='';
     for (int i=s.length-1;s[i]!='/';i--){
@@ -188,6 +197,7 @@ class SongField extends StatelessWidget {
         child: ListTile(
           onTap: function,
           selected:playingThis ,
+          onLongPress: longpress,
           title: Text(nameSong),
         ),
       ),
